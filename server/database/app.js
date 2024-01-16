@@ -13,11 +13,13 @@ app.use(express.urlencoded({ extended: false }));
 
 const reviewsData = JSON.parse(fs.readFileSync('reviews.json', 'utf8'));
 const dealershipsData = JSON.parse(fs.readFileSync('dealerships.json', 'utf8'));
+const carsData = JSON.parse(fs.readFileSync('car_records.json', 'utf8'));
 
 mongoose.connect('mongodb://mongo_db:27017/', { dbName: 'dealershipsDB' });
 
 const Reviews = require('./review');
 const Dealerships = require('./dealership');
+const Cars = require('./inventory');
 
 try {
   Reviews.deleteMany({}).then(() => {
@@ -25,6 +27,9 @@ try {
   });
   Dealerships.deleteMany({}).then(() => {
     Dealerships.insertMany(dealershipsData.dealerships);
+  });
+  Cars.deleteMany({}).then(() => {
+    Cars.insertMany(carsData.cars);
   });
 } catch (error) {
   console.error(error);
@@ -123,6 +128,51 @@ app.post('/insert_review', express.raw({ type: '*/*' }), async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: 'Error inserting review' });
+  }
+});
+
+app.get('/cars/:id', async (req, res) => {
+  try {
+    const documents = await Cars.find({dealer_id: req.params.id});
+    res.json(documents);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching reviews' });
+  }
+});
+
+app.get('/carsbymake/:id/:make', async (req, res) => {
+  try {
+    const documents = await Cars.find({dealer_id: req.params.id, make: req.params.make});
+    res.json(documents);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching reviews by car make and model' });
+  }
+});
+
+app.get('/carsbymodel/:id/:model', async (req, res) => {
+  try {
+    const documents = await Cars.find({ dealer_id: req.params.id, model: req.params.model });
+    res.json(documents);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching dealers by ID' });
+  }
+});
+
+app.get('/carsbymaxmileage/:id/:mileage', async (req, res) => {
+  try {
+    const documents = await Cars.find({ dealer_id: req.params.id, mileage : { $lte : req.params.mileage} });
+    res.json(documents);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching dealers by ID' });
+  }
+});
+
+app.get('/carsbyyear/:id/:year', async (req, res) => {
+  try {
+    const documents = await Cars.find({ dealer_id: req.params.id, year : { $gte :req.params.year }});
+    res.json(documents);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching dealers by ID' });
   }
 });
 
