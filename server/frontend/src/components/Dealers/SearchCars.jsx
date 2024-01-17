@@ -1,87 +1,50 @@
 // frontend/src/components/Dealers/SearchCars.jsx
 
 import React, { useState, useEffect } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import Header from '../Header/Header';
 
-const SearchCars = ({ dealerId }) => {
-  // State hooks to manage the values of the dropdowns
-  const [make, setMake] = useState('');
-  const [model, setModel] = useState('');
-  const [location, setLocation] = useState('');
-  const [priceMin, setPriceMin] = useState('');
-  const [priceMax, setPriceMax] = useState('');
-  const [bodyType, setBodyType] = useState('');
-  const [keywords, setKeywords] = useState('');
+const SearchCars = () => {
+  const [cars, setCars] = useState([]);
+  const { id } = useParams();
 
-  // Hook to access the browser history
-  const history = useHistory();
+  useEffect(() => {
+    const fetchCars = async () => {
+      try {
+        const response = await fetch(`http://localhost:3030/cars/${id}`);
+        const data = await response.json();
 
-  // Function to handle the search button click
-  const handleSearch = () => {
-    // Constructing the search query based on the selected values
-    const searchQuery = `make=${make}&model=${model}&location=${location}&priceMin=${priceMin}&priceMax=${priceMax}&bodyType=${bodyType}&keywords=${keywords}`;
-    
-    // Navigating to the search results page with the constructed query
-    history.push(`/dealer/${dealerId}/search?${searchQuery}`);
-  };
+        if (response.status === 200) {
+          setCars(data);
+        } else {
+          console.error('Error fetching cars:', data.error);
+        }
+      } catch (error) {
+        console.error('Error fetching cars:', error.message);
+      }
+    };
+
+    fetchCars();
+  }, [id]);
 
   return (
     <div>
-      {/* Dropdown for Make */}
-      <select value={make} onChange={(e) => setMake(e.target.value)}>
-        {/* Options for Make */}
-        <option value="">Select Make</option>
-        <option value="Toyota">Toyota</option>
-        {/* Add other make options as needed */}
-      </select>
-
-      {/* Dropdown for Model */}
-      <select value={model} onChange={(e) => setModel(e.target.value)}>
-        {/* Options for Model */}
-        <option value="">Select Model</option>
-        {/* Add other model options as needed */}
-      </select>
-
-      {/* Dropdown for Location */}
-      <select value={location} onChange={(e) => setLocation(e.target.value)}>
-        {/* Options for Location */}
-        <option value="">Select Location</option>
-        {/* Add other location options as needed */}
-      </select>
-
-      {/* Dropdown for Price Min */}
-      <select value={priceMin} onChange={(e) => setPriceMin(e.target.value)}>
-        {/* Options for Price Min */}
-        <option value="">Select Min Price</option>
-        {/* Add other price options as needed */}
-      </select>
-
-      {/* Dropdown for Price Max */}
-      <select value={priceMax} onChange={(e) => setPriceMax(e.target.value)}>
-        {/* Options for Price Max */}
-        <option value="">Select Max Price</option>
-        {/* Add other price options as needed */}
-      </select>
-
-      {/* Dropdown for Body Type */}
-      <select value={bodyType} onChange={(e) => setBodyType(e.target.value)}>
-        {/* Options for Body Type */}
-        <option value="">Select Body Type</option>
-        {/* Add other body type options as needed */}
-      </select>
-
-      {/* Dropdown for Keywords */}
-      <input
-        type="text"
-        placeholder="Keywords"
-        value={keywords}
-        onChange={(e) => setKeywords(e.target.value)}
-      />
-
-      {/* Button to trigger the search */}
-      <button onClick={handleSearch}>Search</button>
-    </div>
-  );
-};
-
-export default SearchCars;
+      <Header />
+      <h1>Cars at Dealer ID {id}</h1>
+      <div>
+        {cars.length === 0 ? (
+          <p>Loading cars...</p>
+        ) : (
+          <div>
+            {cars.map((car) => (
+              <div key={car._id}>
+                <h3>{car.make} {car.model}</h3>
+                <p>Year: {car.year}</p>
+                <p>Mileage: {car.mileage}</p>
+                {/* Add other car details as needed */}
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div
