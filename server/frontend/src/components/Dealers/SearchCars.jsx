@@ -11,7 +11,8 @@ const SearchCars = () => {
   useEffect(() => {
     const fetchCars = async () => {
       try {
-        const response = await fetch(`http://localhost:3030/cars/${id}`);
+        const response = await fetch(`https://ksundararaja-3030.theiadockernext-1-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai/cars/${id}`);
+        
         const data = await response.json();
 
         if (response.status === 200) {
