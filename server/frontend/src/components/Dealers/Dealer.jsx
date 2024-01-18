@@ -7,7 +7,6 @@ import neutral_icon from "../assets/neutral.png"
 import negative_icon from "../assets/negative.png"
 import review_icon from "../assets/reviewbutton.png"
 import Header from '../Header/Header';
-import DealerSearchWrapper from './DealerSearchWrapper';  // Import the DealerSearchWrapper component
 
 const Dealer = () => {
 
@@ -75,9 +74,6 @@ return(
       <h1 style={{color:"grey"}}>{dealer.full_name}{postReview}</h1>
       <h4  style={{color:"grey"}}>{dealer['city']},{dealer['address']}, Zip - {dealer['zip']}, {dealer['state']} </h4>
       </div>
-
-    <DealerSearchWrapper dealerId={id} />  {/* Render the DealerSearchWrapper component */}
-    
       <div class="reviews_panel">
       {reviews.length === 0 && unreviewed === false ? (
         <text>Loading Reviews....</text>

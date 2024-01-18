@@ -1,7 +1,7 @@
 // frontend/src/components/Dealers/DealerSearchWrapper.jsx
 
 import React from 'react';
-import SearchCars from './SearchCars';
+// import SearchCars from './SearchCars';
 
 const DealerSearchWrapper = ({ dealerId }) => {
   return (
@@ -10,7 +10,7 @@ const DealerSearchWrapper = ({ dealerId }) => {
       <h2>Search Cars in this Dealership</h2>
       
       {/* Render the SearchCars component */}
-      <SearchCars dealerId={dealerId} />
+      {/* <SearchCars dealerId={dealerId} /> */}
     </div>
   );
 };
