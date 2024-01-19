@@ -14,7 +14,7 @@ import logging
 import json
 from django.views.decorators.csrf import csrf_exempt
 from .populate import initiate
-from .restapis import get_request, analyze_review_sentiments, post_review
+from .restapis import get_request, analyze_review_sentiments, post_review, searchcars_request
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -164,7 +164,7 @@ def get_inventory(request, dealer_id):
         else:
             endpoint = "/cars/"+str(dealer_id)
  
-        cars = get_request(endpoint)
+        cars = searchcars_request(endpoint)
         return JsonResponse({"status": 200, "cars": cars})
     else:
         return JsonResponse({"status": 400, "message": "Bad Request"})
