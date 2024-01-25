@@ -23,7 +23,6 @@ const SearchCars = () => {
     const retobj = await res.json();
     if(retobj.status === 200) {
       let dealer = retobj.dealer;
-      console.log(dealer);
       setDealer({"full_name":dealer[0].full_name})
     }
   }
@@ -47,7 +46,6 @@ const SearchCars = () => {
     const retobj = await res.json();
     
     if(retobj.status === 200) {
-        console.log("adfa", retobj)
       let cars = Array.from(retobj.cars)
       setCars(cars);
       setAllCars(cars);
@@ -55,7 +53,73 @@ const SearchCars = () => {
     }
   }
 
+  const setCarsmatchingCriteria = async(matching_cars)=>{
+    let cars = Array.from(matching_cars)
+    console.log("Number of matching cars "+cars.length);
 
+    let makeIdx = document.getElementById('make').selectedIndex;
+    let modelIdx = document.getElementById('model').selectedIndex;
+    let yearIdx = document.getElementById('year').selectedIndex;
+    let mileageIdx = document.getElementById('mileage').selectedIndex;
+    let priceIdx = document.getElementById('price').selectedIndex;
+
+    if(makeIdx !== 0) {
+      let currmake = document.getElementById('make').value;
+      cars = cars.filter(car => car.make === currmake);
+    }
+    if(modelIdx !== 0) {
+      let currmodel = document.getElementById('model').value;
+      cars = cars.filter(car => car.model === currmodel);
+      if(cars.length !== 0) {
+        document.getElementById('make').value = cars[0].make;
+      }
+    }
+
+    if(yearIdx !== 0) {
+      let curryear = document.getElementById('year').value;
+      cars = cars.filter(car => car.year >= curryear);
+      if(cars.length !== 0) {
+        document.getElementById('make').value = cars[0].make;
+      }
+    }
+
+    if(mileageIdx !== 0) {
+      let currmileage = parseInt(document.getElementById('mileage').value);
+      if(currmileage === 50000) {
+        cars = cars.filter(car => car.mileage <= currmileage);
+      } else if (currmileage === 100000){
+        cars = cars.filter(car => car.mileage <= currmileage && car.mileage > 50000);
+      } else if (currmileage === 150000){
+        cars = cars.filter(car => car.mileage <= currmileage && car.mileage > 100000);
+      } else if (currmileage === 200000){
+        cars = cars.filter(car => car.mileage <= currmileage && car.mileage > 150000);
+      } else {
+        cars = cars.filter(car => car.mileage > 200000);
+      }
+    }
+
+    if(priceIdx !== 0) {
+      let currprice = parseInt(document.getElementById('price').value);
+      if(currprice === 20000) {
+        cars = cars.filter(car => car.price <= currprice);
+      } else if (currprice === 40000){
+        cars = cars.filter(car => car.price <= currprice && car.price > 20000);
+      } else if (currprice === 60000){
+        cars = cars.filter(car => car.price <= currprice && car.price > 40000);
+      } else if (currprice === 80000){
+        cars = cars.filter(car => car.price <= currprice && car.price > 60000);
+      } else {
+        cars = cars.filter(car => car.price > 80000);
+      }
+    }
+
+    if(cars.length === 0) {
+      setMessage("No cars found matching criteria");
+    }
+    setCars(cars);
+  }
+
+  
   let SearchCarsByMake = async ()=> {
     let make = document.getElementById("make").value;
     dealer_url = dealer_url + "?make="+make;
@@ -69,13 +133,8 @@ const SearchCars = () => {
       const retobj = await res.json();
       
       if(retobj.status === 200) {
-        let cars = Array.from(retobj.cars)
-        if(cars.length === 0) {
-          setMessage("No cars found matching criteria");
-        } else {
-          setCars(cars);
+        setCarsmatchingCriteria(retobj.cars);
       }
-   }
   }
 
    let SearchCarsByModel = async ()=> {
@@ -91,13 +150,8 @@ const SearchCars = () => {
       const retobj = await res.json();
       
       if(retobj.status === 200) {
-        let cars = Array.from(retobj.cars)
-        if(cars.length === 0) {
-          setMessage("No cars found matching criteria");
-        } else {
-          setCars(cars);
+        setCarsmatchingCriteria(retobj.cars);
       }
-   }
   }
 
   let SearchCarsByYear = async ()=> {
@@ -113,13 +167,8 @@ const SearchCars = () => {
       const retobj = await res.json();
       
       if(retobj.status === 200) {
-        let cars = Array.from(retobj.cars)
-        if(cars.length === 0) {
-          setMessage("No cars found matching criteria");
-        } else {
-          setCars(cars);
+        setCarsmatchingCriteria(retobj.cars);
       }
-   }
   }
 
   let SearchCarsByMileage = async ()=> {
@@ -136,15 +185,8 @@ const SearchCars = () => {
       const retobj = await res.json();
       
       if(retobj.status === 200) {
-        let cars = Array.from(retobj.cars)
-        if(cars.length === 0) {
-          setMessage("No cars found matching criteria");
-        } else {
-        document.getElementById('make').selectedIndex = 0;
-        document.getElementById('model').selectedIndex = 0;
-          setCars(cars);
+        setCarsmatchingCriteria(retobj.cars);
       }
-   }
   }
 
 
@@ -161,18 +203,19 @@ const SearchCars = () => {
       const retobj = await res.json();
       
       if(retobj.status === 200) {
-        let cars = Array.from(retobj.cars)
-        if(cars.length === 0) {
-          setMessage("No cars found matching criteria");
-        } else {
-            document.getElementById('make').selectedIndex = 0;
-            document.getElementById('model').selectedIndex = 0;
-          setCars(cars);
+        setCarsmatchingCriteria(retobj.cars);
       }
-   }
   }
 
+  const reset = ()=>{
+    const selectElements = document.querySelectorAll('select');
 
+    selectElements.forEach((select) => {
+      select.selectedIndex = 0;
+    });  
+    fetchCars();
+  }
+  
 
   useEffect(() => {
     fetchCars();
@@ -234,7 +277,7 @@ const SearchCars = () => {
           <option value='200001'>Over 200000</option>
       </select>
       <span style={{ marginLeft: '10px', paddingLeft: '10px'}}>Price</span>
-      <select style={{ marginLeft: '10px', marginRight: '10px' ,paddingLeft: '10px', borderRadius :'10px'}} name="mileage" id="mileage" onChange={SearchCarsByPrice}>
+      <select style={{ marginLeft: '10px', marginRight: '10px' ,paddingLeft: '10px', borderRadius :'10px'}} name="price" id="price" onChange={SearchCarsByPrice}>
           <option disabled selected value> -- select an option -- </option>
           <option value='20000'>Under 20000</option>
           <option value='40000'>20000 - 40000</option>
@@ -243,7 +286,7 @@ const SearchCars = () => {
           <option value='80001'>Over 80000</option>
       </select>
 
-
+      <button style={{marginLeft: '10px', paddingLeft: '10px'}} onClick={reset}>Reset</button>
 
       </div>
 
@@ -260,6 +303,7 @@ const SearchCars = () => {
                 <h3>{car.make} {car.model}</h3>
                 <p>Year: {car.year}</p>
                 <p>Mileage: {car.mileage}</p>
+                <p>Price: {car.price}</p>
               </div>
               <hr/>
               </div>
