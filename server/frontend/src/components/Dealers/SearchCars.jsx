@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 import Header from '../Header/Header';
 
 const SearchCars = () => {
-  const [allCars, setAllCars] = useState([]);
   const [cars, setCars] = useState([]);
   const [makes, setMakes] = useState([]);
   const [models, setModels] = useState([]);
@@ -48,7 +47,6 @@ const SearchCars = () => {
     if(retobj.status === 200) {
       let cars = Array.from(retobj.cars)
       setCars(cars);
-      setAllCars(cars);
       populateMakesAndModels(cars);
     }
   }
@@ -156,7 +154,9 @@ const SearchCars = () => {
 
   let SearchCarsByYear = async ()=> {
     let year = document.getElementById("year").value;
-    dealer_url = dealer_url + "?year="+year;
+    if (year !== "all") {
+      dealer_url = dealer_url + "?year="+year;
+    }
 
     const res = await fetch(dealer_url, {
         method: 'GET',
@@ -174,7 +174,9 @@ const SearchCars = () => {
   let SearchCarsByMileage = async ()=> {
     
     let mileage = document.getElementById("mileage").value;
-    dealer_url = dealer_url + "?mileage="+mileage;
+    if (mileage !== "all") {
+      dealer_url = dealer_url + "?mileage="+mileage;
+    }    
 
     const res = await fetch(dealer_url, {
         method: 'GET',
@@ -192,8 +194,10 @@ const SearchCars = () => {
 
   let SearchCarsByPrice = async ()=> {
     let price = document.getElementById("price").value;
-    dealer_url = dealer_url + "?price="+price;
-
+    if(price !== "all") {
+      dealer_url = dealer_url + "?price="+price;
+    }
+    
     const res = await fetch(dealer_url, {
         method: 'GET',
         headers: {
@@ -258,18 +262,18 @@ const SearchCars = () => {
         </>
       )}      
       </select>
-      <span style={{ marginLeft: '10px', paddingLeft: '10px'}}>Not older than</span>
+      <span style={{ marginLeft: '10px', paddingLeft: '10px'}}>Year</span>
       <select style={{ marginLeft: '10px', marginRight: '10px' ,paddingLeft: '10px', borderRadius :'10px'}} name="year" id="year" onChange={SearchCarsByYear}>
-          <option disabled selected value> -- select an option -- </option>
-          <option value='2024'>2024</option>
-          <option value='2023'>2023</option>
-          <option value='2022'>2022</option>
-          <option value='2021'>2021</option>
-          <option value='2020'>2020</option>
+          <option selected value='all'> -- All -- </option>
+          <option value='2024'>2024 or newer</option>
+          <option value='2023'>2023 or newer</option>
+          <option value='2022'>2022 or newer</option>
+          <option value='2021'>2021 or newer</option>
+          <option value='2020'>2020 or newer</option>
       </select>
       <span style={{ marginLeft: '10px', paddingLeft: '10px'}}>Mileage</span>
       <select style={{ marginLeft: '10px', marginRight: '10px' ,paddingLeft: '10px', borderRadius :'10px'}} name="mileage" id="mileage" onChange={SearchCarsByMileage}>
-          <option disabled selected value> -- select an option -- </option>
+        <option selected value='all'> -- All -- </option>
           <option value='50000'>Under 50000</option>
           <option value='100000'>50000 - 100000</option>
           <option value='150000'>100000 - 150000</option>
@@ -278,7 +282,7 @@ const SearchCars = () => {
       </select>
       <span style={{ marginLeft: '10px', paddingLeft: '10px'}}>Price</span>
       <select style={{ marginLeft: '10px', marginRight: '10px' ,paddingLeft: '10px', borderRadius :'10px'}} name="price" id="price" onChange={SearchCarsByPrice}>
-          <option disabled selected value> -- select an option -- </option>
+          <option selected value='all'> -- All -- </option>
           <option value='20000'>Under 20000</option>
           <option value='40000'>20000 - 40000</option>
           <option value='60000'>40000 - 60000</option>
