@@ -16,6 +16,8 @@ const dealershipsData = JSON.parse(fs.readFileSync('dealerships.json', 'utf8'));
 
 mongoose.connect('mongodb://mongo_db:27017/', { dbName: 'dealershipsDB' });
 
+// Test line added for Linting & CI CD checking
+
 const Reviews = require('./review');
 const Dealerships = require('./dealership');
 
