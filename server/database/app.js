@@ -75,23 +75,23 @@ app.get('/fetchReviews/dealer/:id', async (req, res) => {
   }
 });
 
-app.get('/fetchReviews/car/:carmake', async (req, res) => {
-  try {
-    const documents = await Reviews.find({ car_make: req.params.carmake });
-    res.json(documents);
-  } catch (error) {
-    res.status(500).json({ error: 'Error fetching reviews by car make' });
-  }
-});
+// app.get('/fetchReviews/car/:carmake', async (req, res) => {
+//   try {
+//     const documents = await Reviews.find({ car_make: req.params.carmake });
+//     res.json(documents);
+//   } catch (error) {
+//     res.status(500).json({ error: 'Error fetching reviews by car make' });
+//   }
+// });
 
-app.get('/fetchReviews/car/:carmake/:model', async (req, res) => {
-  try {
-    const documents = await Reviews.find({ car_make: req.params.carmake, car_model: req.params.model });
-    res.json(documents);
-  } catch (error) {
-    res.status(500).json({ error: 'Error fetching reviews by car make and model' });
-  }
-});
+// app.get('/fetchReviews/car/:carmake/:model', async (req, res) => {
+//   try {
+//     const documents = await Reviews.find({ car_make: req.params.carmake, car_model: req.params.model });
+//     res.json(documents);
+//   } catch (error) {
+//     res.status(500).json({ error: 'Error fetching reviews by car make and model' });
+//   }
+// });
 
 app.get('/fetchDealer/:id', async (req, res) => {
   try {
